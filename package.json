@@ -4,6 +4,11 @@
   "version": "1.0.0",
   "description": "A file preview generator",
   "main": "src/thumbnailator.js",
+  "files": [
+    "src",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "test": "mocha",
     "test:samples": "mocha test/samples.js"
