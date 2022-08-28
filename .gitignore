@@ -1,0 +1,11 @@
+# IDE
+.vscode
+.idea
+
+# Modules
+node_modules
+package-lock.json
+bun.lockb
+
+# Tests
+test/thumbnails/*

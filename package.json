@@ -1,0 +1,37 @@
+{
+  "name": "thumbnailator",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "A file preview generator",
+  "main": "src/thumbnailator.js",
+  "scripts": {
+    "test": "mocha",
+    "test:samples": "mocha test/samples.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:astappiev/thumbnailator.git"
+  },
+  "keywords": [
+    "video",
+    "document",
+    "image",
+    "preview",
+    "thumbnail"
+  ],
+  "author": "Oleh Astappiev (https://github.com/astappiev)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/astappiev/thumbnailator/issues"
+  },
+  "homepage": "https://github.com/astappiev/thumbnailator",
+  "dependencies": {
+    "mime": "^3.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0"
+  },
+  "engines": {
+    "node": ">=14.14.0"
+  }
+}
