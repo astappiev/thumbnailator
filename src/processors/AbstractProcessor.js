@@ -18,13 +18,22 @@
 export default class AbstractProcessor {
 
     /**
-     * @param {function(input, output, options): Promise} generate
      * @param {string} input
      * @param {string} output
      * @param {ProcessorOptions} options
      * @returns {Promise<void>}
      */
-    async process(generate, input, output, options) {
+    async _root(input, output, options) {
+        throw TypeError('Not injected properly, use `addProcessor()` function!');
+    }
+
+    /**
+     * @param {string} input
+     * @param {string} output
+     * @param {ProcessorOptions} options
+     * @returns {Promise<void>}
+     */
+    async process(input, output, options) {
         throw TypeError('Not implemented!');
     }
 

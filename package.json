@@ -31,7 +31,8 @@
   },
   "homepage": "https://github.com/astappiev/thumbnailator",
   "dependencies": {
-    "mime": "^3.0.0"
+    "mime": "^3.0.0",
+    "tmp": "^0.2.1"
   },
   "devDependencies": {
     "mocha": "^10.0.0"

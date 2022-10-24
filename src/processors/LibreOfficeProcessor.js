@@ -1,26 +1,21 @@
-import {exec, randGuid, tempPath} from "../utils/utils.js";
+import {exec, withTmpDir, replaceExt} from "../utils/utils.js";
 import AbstractProcessor from "./AbstractProcessor.js";
-import fsPromises from "fs/promises";
-import path from "path";
 
 export default class LibreOfficeProcessor extends AbstractProcessor {
 
-    async process(generate, input, output, options) {
-        const cacheId = randGuid();
-        const cacheDir = tempPath(cacheId);
-        await fsPromises.mkdir(cacheDir);
-
-        const inputBasename = path.basename(input);
-        const inputWithoutExt = inputBasename.substring(0, inputBasename.lastIndexOf('.'));
-        const tempPDF = path.join(cacheDir, inputWithoutExt + '.pdf');
-        await exec('libreoffice', [
-            '--headless',
-            '--convert-to', 'pdf:writer_pdf_Export', input,
-            '--outdir', cacheDir,
-            // '-env:UserInstallation=file:///tmp/LibreOffice_Conversion_' + cacheId
-        ]);
-        await generate(tempPDF, output, options);
-        await fsPromises.rm(cacheDir, {recursive: true, force: true});
+    async process(input, output, options) {
+        await withTmpDir(async (cacheDir) => {
+            const tempPDF = replaceExt(input, 'pdf', cacheDir);
+            await exec('libreoffice', [
+                '--headless',
+                '--convert-to', 'pdf:writer_pdf_Export',
+                '--outdir', cacheDir,
+                '--convert-images-to', '"jpg"',
+                // '-env:UserInstallation=file:///tmp/LibreOffice_Conversion_' + cacheId
+                input,
+            ]);
+            await this._root(tempPDF, output, options);
+        });
     }
 
     getSupportedMimeTypes() {

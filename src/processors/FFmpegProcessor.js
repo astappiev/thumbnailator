@@ -3,7 +3,7 @@ import AbstractProcessor from "./AbstractProcessor.js";
 
 export default class FFmpegProcessor extends AbstractProcessor {
 
-    async process(generate, input, output, options) {
+    async process(input, output, options) {
         const ffmpegArgs = ['-y', '-i', input, '-vf', 'thumbnail', '-frames:v', '1', output];
 
         if (options.width > 0 && options.height > 0) {

@@ -3,7 +3,7 @@ import AbstractProcessor from "./AbstractProcessor.js";
 
 export default class GraphicsMagickProcessor extends AbstractProcessor {
 
-    async process(generate, input, output, options) {
+    async process(input, output, options) {
         const convertArgs = ['convert', `${input}[0]`, output];
         if (options.width > 0 && options.height > 0) {
             if (options.keepAspect) {

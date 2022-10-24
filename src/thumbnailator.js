@@ -21,7 +21,7 @@ for (const processor of processors) {
 /**
  * @param {AbstractProcessor} processor
  */
-function addProcessor(processor) {
+export function addProcessor(processor) {
     const supportedMimeTypes = processor.getSupportedMimeTypes();
 
     if (!Array.isArray(supportedMimeTypes) || supportedMimeTypes.length <= 0) {
@@ -33,6 +33,7 @@ function addProcessor(processor) {
             console.log('A processor is already defined for the mimeType: ' + mimeType);
         }
 
+        processor._root = process;
         processorsMap.set(mimeType, processor);
     }
 }
@@ -43,7 +44,7 @@ function addProcessor(processor) {
  * @param {ProcessorOptions} options
  * @returns {Promise<void>}
  */
-async function generate(input, output, options = {}) {
+async function process(input, output, options = {}) {
     const stats = await fsPromises.lstat(input);
     if (!stats.isFile()) {
         throw TypeError('The input is not a valid file path.')
@@ -60,10 +61,10 @@ async function generate(input, output, options = {}) {
     const mineType = mime.getType(extInput);
     const processor = processorsMap.get(mineType);
     if (processor) {
-        return processor.process(generate, input, output, options);
+        return processor.process(input, output, options);
     }
 
     throw TypeError(`The input file type is not supported: ${mineType}`);
 }
 
-export default generate;
+export default process;
