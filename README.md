@@ -1,6 +1,6 @@
 # Thumbnailator - A file preview generator
 
-Will generate a file preview (gif, jpg or png) of about 450 different document formats, with minimum codebase.
+Will generate a file preview (jpg, png or webp) of about 450 different document formats, with minimum codebase.
 
 ## Installation
 
@@ -37,3 +37,7 @@ You can set more options for the preview generation. All available options are:
 | quality    | For the JPEG and MPEG image formats, quality is 0 (the lowest image quality and highest compression) to 100 (the best quality but least effective compression)                  | number, 0-100       | 75, normal |
 | density    | If the file format supports it, may be used to update the image resolution                                                                                                      | dots per inch (DPI) | 72         |
 | background | The background color                                                                                                                                                            | color hash or rgba  |            |
+
+## TODO:
+- [ ] Smart crop
+- [ ] Compress images, e.g. with https://github.com/Lymphatus/caesium-clt

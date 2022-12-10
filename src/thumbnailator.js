@@ -56,8 +56,8 @@ async function process(input, output, options = {}) {
     const extInput = path.extname(input).toLowerCase().replace('.', '');
     const extOutput = path.extname(output).toLowerCase().replace('.', '');
 
-    if (!['gif', 'jpg', 'png'].includes(extOutput)) {
-        throw TypeError('Output file type is not supported, use: png, gif or jpg');
+    if (!['jpg', 'png', 'webp'].includes(extOutput)) {
+        throw TypeError('Output file type is not supported, use: jpg, png or webp');
     }
 
     const mineType = mime.getType(extInput);
