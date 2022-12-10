@@ -3,12 +3,14 @@ import path from "path";
 import mime from "mime";
 
 import FFmpegProcessor from "./processors/FFmpegProcessor.js";
+import FFmpegAudioProcessor from "./processors/FFmpegAudioProcessor.js";
 import GraphicsMagickProcessor from "./processors/GraphicsMagickProcessor.js";
 import LibreOfficeProcessor from "./processors/LibreOfficeProcessor.js";
 
 const processors = [
     new GraphicsMagickProcessor(),
     new FFmpegProcessor(),
+    new FFmpegAudioProcessor(),
     new LibreOfficeProcessor(),
 ];
 
