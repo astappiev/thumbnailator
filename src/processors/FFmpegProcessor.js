@@ -7,7 +7,27 @@ export default class FFmpegProcessor extends AbstractProcessor {
         const ffmpegArgs = ['-y', '-i', input, '-vf', 'thumbnail', '-frames:v', '1', output];
 
         if (options.width > 0 && options.height > 0) {
-            ffmpegArgs.splice(4, 1, `thumbnail,scale=${options.width}:${options.height}`);
+            if (options.keepAspect) {
+                // Maximum values of height and width given, aspect ratio preserved.
+                ffmpegArgs.splice(4, 1, `thumbnail,scale=w=${options.width}:h=${options.height}:force_original_aspect_ratio=decrease`);
+            } else if (options.thumbnail) {
+                // 	Minimum values of width and height given, aspect ratio preserved.
+                ffmpegArgs.splice(4, 1, `thumbnail,scale=w=${options.width}:h=${options.height}:force_original_aspect_ratio=increase`);
+            } else {
+                // Width and height emphatically given, original aspect ratio ignored.
+                ffmpegArgs.splice(4, 1, `thumbnail,scale=w=${options.width}:h=${options.height}`);
+            }
+
+            if (options.crop) {
+                // Cropping to the center of the image, so the result will be exactly of required size
+                ffmpegArgs[4] += `,crop=${options.width}:${options.height}`;
+            }
+        } else if (options.height > 0) {
+            // Height given, width automagically selected to preserve aspect ratio.
+            ffmpegArgs.splice(4, 1, `thumbnail,scale=-1:${options.height}`);
+        } else if (options.width > 0) {
+            // Width given, height automagically selected to preserve aspect ratio.
+            ffmpegArgs.splice(4, 1, `thumbnail,scale=${options.width}:-1`);
         }
 
         return exec('ffmpeg', ffmpegArgs);

@@ -2,6 +2,7 @@
  * @typedef {Object} ProcessorOptions
  * @prop {number} width The target image width, in pixels
  * @prop {number} height The target image height, in pixels
+ * @prop {string} [crop] If set to {@code true} the result image will be of exact size given, cropped to center
  * @prop {boolean} [keepAspect] If set to {@code true} will keep the same aspect ratio what the input image had
  * @prop {boolean} [thumbnail] Resizes the image as quickly as possible, with more concern for speed than resulting
  *  image quality. Regardless, resulting image quality should be acceptable for many uses.

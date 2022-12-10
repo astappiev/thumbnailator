@@ -1,23 +1,39 @@
 import {exec} from "../utils/utils.js";
 import AbstractProcessor from "./AbstractProcessor.js";
 
+/**
+ * A useful documentation for the options of ImageMagick (should also work for GraphicsMagick)
+ * https://imagemagick.org/script/command-line-options.php#resize
+ */
 export default class GraphicsMagickProcessor extends AbstractProcessor {
 
     async process(input, output, options) {
         const convertArgs = ['convert', `${input}[0]`, output];
+
         if (options.width > 0 && options.height > 0) {
             if (options.keepAspect) {
+                // Maximum values of height and width given, aspect ratio preserved.
                 convertArgs.splice(2, 0, '-resize', `${options.width}x${options.height}`);
             } else if (options.thumbnail) {
+                // 	Minimum values of width and height given, aspect ratio preserved.
                 convertArgs.splice(2, 0, '-thumbnail', `${options.width}x${options.height}^`);
             } else {
+                // Width and height emphatically given, original aspect ratio ignored.
                 convertArgs.splice(2, 0, '-resize', `${options.width}x${options.height}!`);
             }
+
+            if (options.crop) {
+                // Cropping to the center of the image, so the result will be exactly of required size
+                convertArgs.splice(4, 0, '-gravity', 'center', '-extent', `${options.width}x${options.height}`);
+            }
         } else if (options.height > 0) {
+            // Height given, width automagically selected to preserve aspect ratio.
             convertArgs.splice(2, 0, '-resize', 'x' + options.height);
         } else if (options.width > 0) {
+            // Width given, height automagically selected to preserve aspect ratio.
             convertArgs.splice(2, 0, '-resize', String(options.width));
         }
+
         if (options.quality) {
             convertArgs.splice(2, 0, '-quality', String(options.quality));
         }

@@ -1,5 +1,7 @@
 import fs from "fs";
 import path from "path";
+import assert from "assert";
+import crypto from "crypto";
 import thumbnailator from "../src/thumbnailator.js";
 
 describe('Test thumbnailator on sample files', function () {
@@ -10,20 +12,34 @@ describe('Test thumbnailator on sample files', function () {
     const samples = fs.readdirSync(samplesDir);
 
     const options = {
-        width: 280,
-        height: 210,
-        quality: 100,
+        width: 400,
+        height: 320,
+        quality: 90,
         background: '#fff',
         thumbnail: true,
+        crop: true,
     };
 
-    Array.from(samples).forEach(sampleFileName => {
-        it(`should generate thumbnail for ${sampleFileName}`, (done) => {
+    Array.from(samples).filter(name => !name.includes('thumbnail')).forEach(sampleFileName => {
+        it(`should generate thumbnail for ${sampleFileName}`, async () => {
             const inPath = path.resolve(samplesDir, sampleFileName);
-            const outPath = path.resolve(thumbnailDir, `${sampleFileName.replace(/\.[^/.]+$/, '')}-thumbnail.jpg`);
-            thumbnailator(inPath, outPath, options)
-                .then(() => done())
-                .catch(error => done(error));
+            const outFileName = `${sampleFileName.replace(/\.[^/.]+$/, '')}-thumbnail.jpg`;
+            const outPath = path.resolve(thumbnailDir, outFileName);
+
+            await thumbnailator(inPath, outPath, options);
+            const expected = await checksum(path.resolve(samplesDir, outFileName))
+            const actual = await checksum(outPath)
+            assert.equal(actual, expected);
         });
     });
 });
+
+function checksum(path) {
+    return new Promise((resolve, reject) => {
+        const hash = crypto.createHash('sha1');
+        const stream = fs.createReadStream(path);
+        stream.on('error', err => reject(err));
+        stream.on('data', chunk => hash.update(chunk));
+        stream.on('end', () => resolve(hash.digest('hex')));
+    });
+}
