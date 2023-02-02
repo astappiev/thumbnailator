@@ -7,15 +7,15 @@ export default class FFmpegProcessor extends AbstractProcessor {
         const ffmpegArgs = ['-y', '-i', input, '-vf', 'thumbnail', '-frames:v', '1', output];
 
         if (options.width > 0 && options.height > 0) {
-            if (options.keepAspect) {
-                // Maximum values of height and width given, aspect ratio preserved.
-                ffmpegArgs.splice(4, 1, `thumbnail,scale=w=${options.width}:h=${options.height}:force_original_aspect_ratio=decrease`);
+            if (options.ignoreAspect) {
+                // Width and height emphatically given, original aspect ratio ignored.
+                ffmpegArgs.splice(4, 1, `thumbnail,scale=w=${options.width}:h=${options.height}`);
             } else if (options.thumbnail) {
                 // 	Minimum values of width and height given, aspect ratio preserved.
                 ffmpegArgs.splice(4, 1, `thumbnail,scale=w=${options.width}:h=${options.height}:force_original_aspect_ratio=increase`);
             } else {
-                // Width and height emphatically given, original aspect ratio ignored.
-                ffmpegArgs.splice(4, 1, `thumbnail,scale=w=${options.width}:h=${options.height}`);
+                // Maximum values of height and width given, aspect ratio preserved.
+                ffmpegArgs.splice(4, 1, `thumbnail,scale=w=${options.width}:h=${options.height}:force_original_aspect_ratio=decrease`);
             }
 
             if (options.crop) {

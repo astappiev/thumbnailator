@@ -1,9 +1,13 @@
 /**
  * @typedef {Object} ProcessorOptions
- * @prop {number} width The target image width, in pixels
- * @prop {number} height The target image height, in pixels
+ * @prop {number} [width] The target image width, in pixels
+ * @prop {number} [height] The target image height, in pixels
+ * @prop {number} [scale] The target image scale, in percent (mutually exclusive with width and height)
  * @prop {string} [crop] If set to {@code true} the result image will be of exact size given, cropped to center
- * @prop {boolean} [keepAspect] If set to {@code true} will keep the same aspect ratio what the input image had
+ * @prop {boolean} [ignoreAspect] If set to {@code true} will ignore the aspect ratio of the original image
+ * @prop {boolean} [oversize] If set to {@code true} will use width and height given as minimum values (with aspect ratio preserved)
+ * @prop {boolean} [shrink] If set to {@code true} will shrink the image if it is larger than the target size
+ * @prop {boolean} [enlarge] If set to {@code true} will enlarge the image if it is smaller than the target size
  * @prop {boolean} [thumbnail] Resizes the image as quickly as possible, with more concern for speed than resulting
  *  image quality. Regardless, resulting image quality should be acceptable for many uses.
  * @prop {number} [quality] For the JPEG and MPEG image formats, quality is 0 (the lowest image quality and highest
