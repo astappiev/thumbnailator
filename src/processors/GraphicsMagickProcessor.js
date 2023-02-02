@@ -37,36 +37,53 @@ export function createImageGeometry(options) {
 }
 
 /**
+ * @param {string} input
+ * @param {string} output
+ * @param {ProcessorOptions} options
+ * @returns {string[]}
+ */
+export function createArguments(input, output, options) {
+    const args = ['convert'];
+
+    if (options.density) {
+        args.push('-density', String(options.density));
+    }
+
+    args.push(input + '[0]');
+
+    if (options.quality) {
+        args.push('-quality', String(options.quality));
+    }
+
+    if (options.background) {
+        args.push('-background', options.background);
+        args.push('-flatten');
+    }
+
+    if (options.width > 0 || options.height > 0 || options.scale > 0) {
+        if (options.crop) {
+            // Cropping to the center of the image, so the result will be exactly of required size
+            args.push('-resize', createImageGeometry({...options, oversize: true}));
+            args.push('-gravity', 'center', '-extent', createImageGeometry(options));
+        } else if (options.thumbnail) {
+            args.push('-thumbnail', createImageGeometry(options));
+        } else {
+            args.push('-resize', createImageGeometry(options));
+        }
+    }
+
+    args.push(output);
+    return args;
+}
+
+/**
  * A useful documentation for the options of ImageMagick (should also work for GraphicsMagick)
  * https://imagemagick.org/script/command-line-options.php#resize
  */
 export default class GraphicsMagickProcessor extends AbstractProcessor {
 
     async process(input, output, options) {
-        const convertArgs = ['convert', `${input}[0]`, output];
-
-        if (options.crop) {
-            // Cropping to the center of the image, so the result will be exactly of required size
-            convertArgs.splice(2, 0, '-resize', createImageGeometry({...options, oversize: true}));
-            convertArgs.splice(4, 0, '-gravity', 'center', '-extent', createImageGeometry(options));
-        } else if (options.thumbnail) {
-            convertArgs.splice(2, 0, '-thumbnail', createImageGeometry(options));
-        } else {
-            convertArgs.splice(2, 0, '-resize', createImageGeometry(options));
-        }
-
-        if (options.quality) {
-            convertArgs.splice(2, 0, '-quality', String(options.quality));
-        }
-        if (options.density) {
-            convertArgs.splice(2, 0, '-density', String(options.density));
-        }
-        if (options.background) {
-            convertArgs.splice(2, 0, '-background', options.background);
-            convertArgs.splice(2, 0, '-flatten');
-        }
-
-        return await exec('gm', convertArgs);
+        return await exec('gm', createArguments(input, output, options));
     }
 
     getSupportedMimeTypes() {

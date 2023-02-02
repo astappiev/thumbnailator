@@ -36,7 +36,7 @@ export default class AbstractProcessor {
      * @param {string} input
      * @param {string} output
      * @param {ProcessorOptions} options
-     * @returns {Promise<void>}
+     * @returns {Promise<void|string>}
      */
     async process(input, output, options) {
         throw TypeError('Not implemented!');

@@ -15,6 +15,7 @@ describe('Test thumbnailator on sample files', function () {
         width: 400,
         height: 320,
         quality: 90,
+        density: 300,
         background: '#fff',
         thumbnail: true,
         crop: true,
