@@ -32,6 +32,13 @@ describe('Test thumbnailator on sample files', function () {
             assert.equal(actual, expected);
         });
     });
+
+    it(`should generate thumbnail`, async () => {
+        const inPath = path.resolve('test', 'OpenDocument.odt');
+        const outPath = path.resolve('test', 'filepreview.png');
+
+        await thumbnailator(inPath, outPath, { width: 1000, thumbnail: true });
+    });
 });
 
 function checksum(path) {
