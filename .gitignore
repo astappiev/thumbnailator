@@ -6,4 +6,4 @@
 node_modules
 
 # Tests
-test/thumbnails/*
+test/out/*

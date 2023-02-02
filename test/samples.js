@@ -1,15 +1,8 @@
-import fs from "fs";
-import path from "path";
-import assert from "assert";
-import crypto from "crypto";
 import thumbnailator from "../src/thumbnailator.js";
+import {assertChecksum, getOut, iterateSamples} from "./helpers.js";
 
 describe('Test thumbnailator on sample files', function () {
     this.timeout(10000);
-
-    const samplesDir = path.resolve('test', 'samples');
-    const thumbnailDir = path.resolve('test', 'thumbnails');
-    const samples = fs.readdirSync(samplesDir);
 
     const options = {
         width: 400,
@@ -21,33 +14,12 @@ describe('Test thumbnailator on sample files', function () {
         crop: true,
     };
 
-    Array.from(samples).filter(name => !name.includes('thumbnail')).forEach(sampleFileName => {
-        it(`should generate thumbnail for ${sampleFileName}`, async () => {
-            const inPath = path.resolve(samplesDir, sampleFileName);
-            const outFileName = `${sampleFileName.replace(/\.[^/.]+$/, '')}-thumbnail.jpg`;
-            const outPath = path.resolve(thumbnailDir, outFileName);
+    iterateSamples().forEach(([base, sampleFile, thumbnailFile]) => {
+        it(`should generate thumbnail for ${base}`, async () => {
+            const outPath = getOut(base.replace('sample_', 'thumbnail_') + '.jpg');
 
-            await thumbnailator(inPath, outPath, options);
-            const expected = await checksum(path.resolve(samplesDir, outFileName))
-            const actual = await checksum(outPath)
-            assert.equal(actual, expected);
+            await thumbnailator(sampleFile, outPath, options);
+            await assertChecksum(outPath, thumbnailFile);
         });
     });
-
-    it(`should generate thumbnail`, async () => {
-        const inPath = path.resolve('test', 'OpenDocument.odt');
-        const outPath = path.resolve('test', 'filepreview.png');
-
-        await thumbnailator(inPath, outPath, { width: 1000, thumbnail: true });
-    });
 });
-
-function checksum(path) {
-    return new Promise((resolve, reject) => {
-        const hash = crypto.createHash('sha1');
-        const stream = fs.createReadStream(path);
-        stream.on('error', err => reject(err));
-        stream.on('data', chunk => hash.update(chunk));
-        stream.on('end', () => resolve(hash.digest('hex')));
-    });
-}
