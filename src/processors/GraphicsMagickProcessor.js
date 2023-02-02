@@ -42,7 +42,7 @@ export function createImageGeometry(options) {
  * @param {ProcessorOptions} options
  * @returns {string[]}
  */
-export function createArguments(input, output, options) {
+export function createArguments(input, output, options = {}) {
     const args = ['convert'];
 
     if (options.density) {
