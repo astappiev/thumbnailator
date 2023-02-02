@@ -64,7 +64,12 @@ export function createArguments(input, output, options) {
         if (options.crop) {
             // Cropping to the center of the image, so the result will be exactly of required size
             args.push('-resize', createImageGeometry({...options, oversize: true}));
-            args.push('-gravity', 'center', '-extent', createImageGeometry(options));
+            if (input.endsWith('.pdf')) {
+                args.push('-gravity', 'north');
+            } else {
+                args.push('-gravity', 'center');
+            }
+            args.push('-extent', createImageGeometry(options));
         } else if (options.thumbnail) {
             args.push('-thumbnail', createImageGeometry(options));
         } else {
