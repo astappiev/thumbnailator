@@ -9,9 +9,9 @@
  * @prop {boolean} [shrink] If set to {@code true} will shrink the image if it is larger than the target size
  * @prop {boolean} [enlarge] If set to {@code true} will enlarge the image if it is smaller than the target size
  * @prop {boolean} [thumbnail] Resizes the image as quickly as possible, with more concern for speed than resulting
- *  image quality. Regardless, resulting image quality should be acceptable for many uses.
- * @prop {number} [quality] For the JPEG and MPEG image formats, quality is 0 (the lowest image quality and highest
- *  compression) to 100 (the best quality but least effective compression). The default quality is 75
+ *  image quality. Regardless, the resulting image quality should be acceptable for many uses.
+ * @prop {number} [quality] For the JPEG and MPEG image formats, quality is 0 (the lowest image quality and the highest
+ *  compression) to 100 (the best quality but the least effective compression). The default quality is 75
  * @prop {number} [density] If the file format supports it, may be used to update the image resolution.
  *  The default resolution is 72 dots per inch (DPI), which is equivalent to one point per pixel
  * @prop {string} [background] The background color
