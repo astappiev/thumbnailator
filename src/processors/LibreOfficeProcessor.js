@@ -96,6 +96,7 @@ export default class LibreOfficeProcessor extends AbstractProcessor {
             "text/csv",
             "text/spreadsheet",
             "application/x-qpro",
+            "application/sql",
             "application/x-sql",
             "application/x-dbase",
             "application/vnd.corel-draw",
