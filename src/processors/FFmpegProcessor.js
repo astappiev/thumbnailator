@@ -8,33 +8,33 @@ import AbstractProcessor from "./AbstractProcessor.js";
  * @returns {string[]}
  */
 export function createArguments(input, output, options = {}) {
-    const args = ['-y', '-i', input, '-vf', 'thumbnail', '-frames:v', '1', output];
+    // https://ffmpeg.org/ffmpeg-filters.html#thumbnail
+    const vfOptions = ['thumbnail'];
 
     if (options.width > 0 && options.height > 0) {
-        if (options.ignoreAspect) {
-            // Width and height emphatically given, original aspect ratio ignored.
-            args[4] = `thumbnail,scale=w=${options.width}:h=${options.height}`;
-        } else if (options.oversize) {
+        let scaleOption = `scale=w=${options.width}:h=${options.height}`;
+        if (options.crop || (!options.ignoreAspect && options.oversize)) {
             // 	Minimum values of width and height given, aspect ratio preserved.
-            args[4] = `thumbnail,scale=w=${options.width}:h=${options.height}:force_original_aspect_ratio=increase`;
-        } else {
+            scaleOption += `:force_original_aspect_ratio=increase`;
+        } else if (!options.ignoreAspect) {
             // Maximum values of height and width given, aspect ratio preserved.
-            args[4] = `thumbnail,scale=w=${options.width}:h=${options.height}:force_original_aspect_ratio=decrease`;
+            scaleOption += `:force_original_aspect_ratio=decrease`;
         }
+        vfOptions.push(scaleOption);
 
         if (options.crop) {
             // Cropping to the center of the image, so the result will be exactly of required size
-            args[4] += `,crop=${options.width}:${options.height}`;
+            vfOptions.push(`crop=${options.width}:${options.height}`);
         }
     } else if (options.height > 0) {
-        // Height given, width automagically selected to preserve aspect ratio.
-        args[4] = `thumbnail,scale=-1:${options.height}`;
+        // Height given, width automagically selected to preserve the aspect ratio
+        vfOptions.push(`scale=-1:${options.height}`);
     } else if (options.width > 0) {
-        // Width given, height automagically selected to preserve aspect ratio.
-        args[4] = `thumbnail,scale=${options.width}:-1`;
+        // Width given, height automagically selected to preserve the aspect ratio
+        vfOptions.push(`scale=${options.width}:-1`);
     }
 
-    return args;
+    return ['-y', '-i', input, '-vf', vfOptions.join(','), '-frames:v', '1', output];
 }
 
 export default class FFmpegProcessor extends AbstractProcessor {
