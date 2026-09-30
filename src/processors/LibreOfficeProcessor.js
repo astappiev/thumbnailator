@@ -1,21 +1,20 @@
-import {exec, withTmpDir, replaceExt} from "../utils/utils.js";
+import {exec, createTmpDir, replaceExt} from "../utils/utils.js";
 import AbstractProcessor from "./AbstractProcessor.js";
 
 export default class LibreOfficeProcessor extends AbstractProcessor {
 
     async process(input, output, options) {
-        await withTmpDir(async (cacheDir) => {
-            const tempPDF = replaceExt(input, 'pdf', cacheDir);
-            await exec('libreoffice', [
-                '--headless',
-                '--convert-to', 'pdf:writer_pdf_Export',
-                '--outdir', cacheDir,
-                '--convert-images-to', '"jpg"',
-                // '-env:UserInstallation=file:///tmp/LibreOffice_Conversion_' + cacheId
-                input,
-            ]);
-            await this._root(tempPDF, output, options);
-        });
+        await using cacheDir = await createTmpDir();
+        const tempPDF = replaceExt(input, 'pdf', cacheDir.path);
+        await exec('libreoffice', [
+            '--headless',
+            '--convert-to', 'pdf:writer_pdf_Export',
+            '--outdir', cacheDir.path,
+            '--convert-images-to', '"jpg"',
+            // '-env:UserInstallation=file:///tmp/LibreOffice_Conversion_' + cacheId
+            input,
+        ]);
+        await this._root(tempPDF, output, options);
     }
 
     getSupportedMimeTypes() {

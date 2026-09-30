@@ -1,6 +1,7 @@
 import path from "path";
+import fs from "fs/promises";
+import os from "os";
 import child_process from "child_process";
-import tmp from "tmp";
 
 /**
  * @param {string} cmd the command to execute
@@ -35,45 +36,12 @@ export function replaceExt(fileName, newExtension, parentPath) {
 }
 
 /**
- * Gets a temporary file name.
+ * Creates a temporary directory, which is removed with its contents when disposed.
  *
- * @param {?object} [options]
- * @returns {string} the newly generated unique name to use
+ * @example
+ * await using tmpDir = await createTmpDir();
+ * @returns {Promise<{path: string, remove: function(): Promise<void>}>} the disposable temporary directory
  */
-export function tmpName(options) {
-    return tmp.tmpNameSync(options);
-}
-
-/**
- * Creates a temporary directory.
- *
- * @param {?object} [options]
- * @returns {Promise<object>} the path to newly crated directory and cleanup callback
- */
-export async function tmpDir(options) {
-    return new Promise((resolve, reject) =>
-        tmp.dir(options, (err, path, cleanup) =>
-            err ? reject(err) : resolve({path, cleanup})));
-}
-
-/**
- * @callback tmpDirCallback
- * @async
- * @param {string} path a path to the created temp directory
- * @param {function} tmpFile a function to create a temporal sub-file
- */
-
-/**
- * @param {tmpDirCallback} fn
- * @param {object} [options]
- * @returns {Promise<?>}
- */
-export async function withTmpDir(fn, options) {
-    const {path, cleanup} = await tmpDir(Object.assign({unsafeCleanup: true}, options));
-    try {
-        const tmpFile = (fileExt) => tmpName({tmpdir: path, template: 'tmp-XXXXXX.' + fileExt})
-        return await fn(path, tmpFile);
-    } finally {
-        await cleanup();
-    }
+export function createTmpDir() {
+    return fs.mkdtempDisposable(path.join(os.tmpdir(), 'thumbnailator-'));
 }

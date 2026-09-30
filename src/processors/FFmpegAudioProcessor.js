@@ -1,22 +1,19 @@
-import {exec, replaceExt, withTmpDir} from "../utils/utils.js";
+import {exec, replaceExt, createTmpDir} from "../utils/utils.js";
 import AbstractProcessor from "./AbstractProcessor.js";
 
 export default class FFmpegAudioProcessor extends AbstractProcessor {
 
     async process(input, output, options) {
         try {
-            await withTmpDir(async (cacheDir) => {
-                const tempCover = replaceExt(input, 'jpg', cacheDir);
-                await exec('ffmpeg', [
-                    '-i', input,
-                    '-an',
-                    '-c:v', 'copy',
-                    tempCover,
-                ]);
-                await this._root(tempCover, output, options);
-            });
-
-            return exec('ffmpeg', options);
+            await using cacheDir = await createTmpDir();
+            const tempCover = replaceExt(input, 'jpg', cacheDir.path);
+            await exec('ffmpeg', [
+                '-i', input,
+                '-an',
+                '-c:v', 'copy',
+                tempCover,
+            ]);
+            await this._root(tempCover, output, options);
         } catch (error) {
             return this.createWaveform(input, output, options);
         }
