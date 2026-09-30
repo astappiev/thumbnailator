@@ -1,6 +1,9 @@
 # IDE
 .vscode
 .idea
+.claude
+.agents
+.mcp.json
 
 # Modules
 node_modules
