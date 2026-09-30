@@ -4,6 +4,9 @@
   "version": "1.4.0",
   "description": "A file preview generator",
   "main": "src/thumbnailator.js",
+  "bin": {
+    "thumbnailator": "src/cli.js"
+  },
   "files": [
     "src",
     "LICENSE",
