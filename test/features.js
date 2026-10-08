@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import path from "path";
 import thumbnailator, {getSupportedMimeTypes, isSupported} from "../src/thumbnailator.js";
 import {createTmpDir, exec} from "../src/utils/utils.js";
-import {getSample} from "./helpers.js";
+import {checksum, getSample} from "./helpers.js";
 
 /**
  * @returns {Promise<{width: number, height: number}>}
@@ -22,6 +22,17 @@ describe('Test thumbnailator features', function () {
         assert.ok(isSupported('application/vnd.ms-word.document.macroEnabled.12'));
         assert.ok(!isSupported('application/x-unknown'));
         assert.ok(!isSupported(undefined));
+    });
+
+    it('should render the requested page', async () => {
+        await using dir = await createTmpDir();
+        const first = path.join(dir.path, 'first.png');
+        const second = path.join(dir.path, 'second.png');
+        const input = getSample('sample_PDF_114kB.pdf');
+
+        await thumbnailator(input, first, {width: 200});
+        await thumbnailator(input, second, {width: 200, page: 1});
+        assert.notEqual(await checksum(first), await checksum(second));
     });
 
     it('should use the given mime type for a file without extension', async () => {

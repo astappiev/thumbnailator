@@ -6,15 +6,17 @@ export default class LibreOfficeProcessor extends AbstractProcessor {
     async process(input, output, options, render) {
         await using cacheDir = await createTmpDir();
         const tempPDF = replaceExt(input, 'pdf', cacheDir.path);
+        // Only the rendered page is exported, as converting a whole long document is slow
+        const exportFilter = 'pdf:writer_pdf_Export:' + JSON.stringify({PageRange: {type: 'string', value: String((options.page ?? 0) + 1)}});
         await exec('libreoffice', [
             '--headless',
-            '--convert-to', 'pdf:writer_pdf_Export',
+            '--convert-to', exportFilter,
             '--outdir', cacheDir.path,
             '--convert-images-to', '"jpg"',
             // '-env:UserInstallation=file:///tmp/LibreOffice_Conversion_' + cacheId
             input,
         ], options.timeout);
-        await render(tempPDF, output, options);
+        await render(tempPDF, output, {...options, page: 0});
     }
 
     getSupportedMimeTypes() {

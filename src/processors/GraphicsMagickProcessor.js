@@ -49,7 +49,7 @@ export function createArguments(input, output, options = {}) {
         args.push('-density', String(options.density));
     }
 
-    args.push(input + '[0]');
+    args.push(`${input}[${options.page ?? 0}]`);
 
     if (options.quality) {
         args.push('-quality', String(options.quality));

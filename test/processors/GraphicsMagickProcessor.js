@@ -38,6 +38,7 @@ describe('Test GraphicsMagickProcessor', function () {
             [{height: 400, width: 1200, oversize: false, background: '#000000'}, 'convert in.pdf[0] -background #000000 -flatten -resize 1200x400 out.jpg'],
             [{height: 400, width: 400, ignoreAspect: true}, 'convert in.pdf[0] -resize 400x400! out.jpg'],
             [{width: 1200, density: 300}, 'convert -density 300 in.pdf[0] -resize 1200x out.jpg'],
+            [{page: 2}, 'convert in.pdf[2] out.jpg'],
         ].forEach(([options, expected]) => {
             it(`should return '${expected}' for options '${JSON.stringify(options)}'`, function() {
                 assert.equal(createArguments('in.pdf', 'out.jpg', {mimeType: 'application/pdf', ...options}).join(' '), expected);
