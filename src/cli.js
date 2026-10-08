@@ -13,6 +13,7 @@ Options:
   -q, --quality <0-100>     JPEG/MPEG quality (default: 75)
   -d, --density <dpi>       image resolution, if the format supports it (default: 72)
   -b, --background <color>  background color (default: transparent)
+  -t, --timeout <ms>        time limit of each external command, 0 disables it (default: 120000)
       --crop                crop to the exact size given, centered
       --ignore-aspect       ignore the aspect ratio of the original image
       --oversize            treat width and height as minimum values
@@ -21,7 +22,7 @@ Options:
       --thumbnail           fast resize, favoring speed over quality
       --help                show this help`;
 
-const NUMBER_OPTIONS = ['width', 'height', 'scale', 'quality', 'density'];
+const NUMBER_OPTIONS = ['width', 'height', 'scale', 'quality', 'density', 'timeout'];
 
 /**
  * @param {string[]} args the command line arguments
@@ -38,6 +39,7 @@ function parseCliArgs(args) {
             quality: {type: 'string', short: 'q'},
             density: {type: 'string', short: 'd'},
             background: {type: 'string', short: 'b'},
+            timeout: {type: 'string', short: 't'},
             crop: {type: 'boolean'},
             'ignore-aspect': {type: 'boolean'},
             oversize: {type: 'boolean'},

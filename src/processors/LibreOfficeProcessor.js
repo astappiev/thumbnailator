@@ -13,7 +13,7 @@ export default class LibreOfficeProcessor extends AbstractProcessor {
             '--convert-images-to', '"jpg"',
             // '-env:UserInstallation=file:///tmp/LibreOffice_Conversion_' + cacheId
             input,
-        ]);
+        ], options.timeout);
         await render(tempPDF, output, options);
     }
 

@@ -12,9 +12,13 @@ export default class FFmpegAudioProcessor extends AbstractProcessor {
                 '-an',
                 '-c:v', 'copy',
                 tempCover,
-            ]);
+            ], options.timeout);
             await render(tempCover, output, options);
         } catch (error) {
+            // A timeout is not a missing cover, the waveform would only exceed the time limit again
+            if (error.killed) {
+                throw error;
+            }
             return this.createWaveform(input, output, options);
         }
     }
@@ -30,7 +34,7 @@ export default class FFmpegAudioProcessor extends AbstractProcessor {
             '-filter_complex', `[0:a]showwavespic=s=${size}:colors=black[fg];[1:v][fg]overlay=format=auto`,
             '-frames:v', '1', output];
 
-        return exec('ffmpeg', ffmpegArgs);
+        return exec('ffmpeg', ffmpegArgs, options.timeout);
     }
 
     getSupportedMimeTypes() {

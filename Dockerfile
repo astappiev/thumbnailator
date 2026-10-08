@@ -18,6 +18,7 @@ RUN apt-get update \
         libreoffice-draw \
         fonts-dejavu \
         fonts-liberation \
+        procps \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

@@ -42,6 +42,7 @@ You can customize the preview generation with various options.
 | `quality`      | Applies to JPEG and MPEG image formats only. <br/>0 = low quality/high compression, 100 = high quality/low compression.          | Number (0-100)              | `75`          |
 | `density`      | If supported by the file format, this option can be used to update the image resolution.                                         | Number (DPI)                | `72`          |
 | `background`   | The background color for the generated image.                                                                                    | String (color hash or RGBA) | `transparent` |
+| `timeout`      | The time limit of each external command (LibreOffice, GraphicsMagick, FFmpeg). `0` disables the limit.                           | Number (in milliseconds)    | `120000`      |
 
 ## Supported Document Formats
 

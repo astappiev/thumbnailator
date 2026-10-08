@@ -15,6 +15,8 @@
  * @prop {number} [density] If the file format supports it, may be used to update the image resolution.
  *  The default resolution is 72 dots per inch (DPI), which is equivalent to one point per pixel
  * @prop {string} [background] The background color
+ * @prop {number} [timeout] The time limit for each external command, in milliseconds. {@code 0} disables it.
+ *  The default is 120000 (2 minutes)
  */
 
 /**
