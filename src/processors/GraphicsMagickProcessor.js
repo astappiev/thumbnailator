@@ -64,7 +64,7 @@ export function createArguments(input, output, options = {}) {
         if (options.crop) {
             // Cropping to the center of the image, so the result will be exactly of required size
             args.push('-resize', createImageGeometry({...options, oversize: true}));
-            if (input.endsWith('.pdf')) {
+            if (options.mimeType === 'application/pdf') {
                 args.push('-gravity', 'north');
             } else {
                 args.push('-gravity', 'center');
@@ -99,7 +99,6 @@ export default class GraphicsMagickProcessor extends AbstractProcessor {
             "image/bmp",
             "image/vnd.wap.wbmp",
             "image/x-ms-bmp",
-            "image/x-MS-bmp",
             "image/cgm",
             "image/fax-g3",
             "image/gif",

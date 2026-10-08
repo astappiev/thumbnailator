@@ -40,6 +40,31 @@ export function addProcessor(processor) {
 }
 
 /**
+ * @returns {string[]} the mime types, which have a processor
+ */
+export function getSupportedMimeTypes() {
+    return Array.from(processorsMap.keys());
+}
+
+/**
+ * @param {string} mimeType
+ * @returns {boolean} whether a preview can be created for the given mime type
+ */
+export function isSupported(mimeType) {
+    return processorsMap.has(normalizeMimeType(mimeType));
+}
+
+/**
+ * Strips the parameters, e.g. when taken from a Content-Type header: "text/plain; charset=utf-8"
+ *
+ * @param {string} [mimeType]
+ * @returns {string|undefined}
+ */
+function normalizeMimeType(mimeType) {
+    return mimeType?.split(';')[0].trim().toLowerCase();
+}
+
+/**
  * @param {string} input
  * @param {string} output
  * @param {ProcessorOptions} options
@@ -59,13 +84,15 @@ async function process(input, output, options = {}) {
         throw TypeError('Output file type is not supported, use: jpg, png or webp');
     }
 
-    const mineType = mime.getType(extInput);
-    const processor = processorsMap.get(mineType);
-    if (processor) {
-        return processor.process(input, output, options, render);
+    // The given mime type takes priority, the file extension is the fallback
+    const extMimeType = mime.getType(extInput);
+    const givenMimeType = normalizeMimeType(options.mimeType);
+    const mimeType = [givenMimeType, extMimeType].find(type => type && processorsMap.has(type));
+    if (mimeType) {
+        return processorsMap.get(mimeType).process(input, output, {...options, mimeType}, render);
     }
 
-    throw TypeError(`The input file type is not supported: ${mineType}`);
+    throw TypeError(`The input file type is not supported: ${givenMimeType || extMimeType}`);
 }
 
 /**
@@ -79,6 +106,6 @@ async function process(input, output, options = {}) {
  *
  * @type {Render}
  */
-const render = (input, output, options) => process(input, output, options);
+const render = (input, output, options) => process(input, output, {...options, mimeType: undefined});
 
 export default process;

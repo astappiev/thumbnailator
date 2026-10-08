@@ -51,13 +51,9 @@ export function exec(cmd, args, timeout = DEFAULT_TIMEOUT) {
  * @param {string} [parentPath]
  * @returns {string}
  */
-export function replaceExt(fileName, newExtension, parentPath) {
-    const inputBasename = path.basename(fileName);
-    const inputWithoutExt = inputBasename.substring(0, inputBasename.lastIndexOf('.'));
-    if (parentPath) {
-        return path.join(parentPath, inputWithoutExt + '.' + newExtension);
-    }
-    return inputWithoutExt + '.' + newExtension;
+export function replaceExt(fileName, newExtension, parentPath = '') {
+    // For a file without extension, the whole basename is kept (as LibreOffice does for its output)
+    return path.join(parentPath, path.parse(fileName).name + '.' + newExtension);
 }
 
 /**

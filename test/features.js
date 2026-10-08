@@ -1,7 +1,7 @@
 import assert from "assert";
 import fs from "fs/promises";
 import path from "path";
-import thumbnailator from "../src/thumbnailator.js";
+import thumbnailator, {getSupportedMimeTypes, isSupported} from "../src/thumbnailator.js";
 import {createTmpDir, exec} from "../src/utils/utils.js";
 import {getSample} from "./helpers.js";
 
@@ -15,6 +15,32 @@ async function identify(filePath) {
 
 describe('Test thumbnailator features', function () {
     this.timeout(60 * 1000);
+
+    it('should list supported mime types', () => {
+        assert.ok(getSupportedMimeTypes().includes('application/pdf'));
+        assert.ok(isSupported('Image/PNG; charset=binary'));
+        assert.ok(isSupported('application/vnd.ms-word.document.macroEnabled.12'));
+        assert.ok(!isSupported('application/x-unknown'));
+        assert.ok(!isSupported(undefined));
+    });
+
+    it('should use the given mime type for a file without extension', async () => {
+        await using dir = await createTmpDir();
+        const input = path.join(dir.path, 'download');
+        const output = path.join(dir.path, 'output.jpg');
+        await fs.copyFile(getSample('sample_PNG_500kB.png'), input);
+
+        await assert.rejects(thumbnailator(input, output, {width: 100}), /not supported/);
+        await thumbnailator(input, output, {width: 100, mimeType: 'image/png; charset=binary'});
+        assert.equal((await identify(output)).width, 100);
+    });
+
+    it('should fall back to the file extension if the mime type is not supported', async () => {
+        await using dir = await createTmpDir();
+        const output = path.join(dir.path, 'output.jpg');
+        await thumbnailator(getSample('sample_PNG_500kB.png'), output, {width: 100, mimeType: 'application/octet-stream'});
+        assert.equal((await identify(output)).width, 100);
+    });
 
     it('should use the cover image of an audio file', async () => {
         await using dir = await createTmpDir();

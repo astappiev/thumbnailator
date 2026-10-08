@@ -40,8 +40,13 @@ describe('Test GraphicsMagickProcessor', function () {
             [{width: 1200, density: 300}, 'convert -density 300 in.pdf[0] -resize 1200x out.jpg'],
         ].forEach(([options, expected]) => {
             it(`should return '${expected}' for options '${JSON.stringify(options)}'`, function() {
-                assert.equal(createArguments('in.pdf', 'out.jpg', options).join(' '), expected);
+                assert.equal(createArguments('in.pdf', 'out.jpg', {mimeType: 'application/pdf', ...options}).join(' '), expected);
             });
+        });
+
+        it('should crop non-pdf to the center', function() {
+            assert.equal(createArguments('download', 'out.jpg', {height: 400, width: 400, crop: true, mimeType: 'image/jpeg'}).join(' '),
+                'convert download[0] -resize 400x400^ -gravity center -extent 400x400 out.jpg');
         });
     });
 });

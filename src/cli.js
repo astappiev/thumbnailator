@@ -13,6 +13,7 @@ Options:
   -q, --quality <0-100>     JPEG/MPEG quality (default: 75)
   -d, --density <dpi>       image resolution, if the format supports it (default: 72)
   -b, --background <color>  background color (default: transparent)
+  -m, --mime-type <type>    mime type of <input>, used instead of its file extension
   -t, --timeout <ms>        time limit of each external command, 0 disables it (default: 120000)
       --crop                crop to the exact size given, centered
       --ignore-aspect       ignore the aspect ratio of the original image
@@ -39,6 +40,7 @@ function parseCliArgs(args) {
             quality: {type: 'string', short: 'q'},
             density: {type: 'string', short: 'd'},
             background: {type: 'string', short: 'b'},
+            'mime-type': {type: 'string', short: 'm'},
             timeout: {type: 'string', short: 't'},
             crop: {type: 'boolean'},
             'ignore-aspect': {type: 'boolean'},
@@ -57,9 +59,12 @@ function parseCliArgs(args) {
         throw TypeError('Expected exactly two arguments: <input> <output>');
     }
 
-    const {'ignore-aspect': ignoreAspect, help, ...options} = values;
+    const {'ignore-aspect': ignoreAspect, 'mime-type': mimeType, help, ...options} = values;
     if (ignoreAspect) {
         options.ignoreAspect = true;
+    }
+    if (mimeType) {
+        options.mimeType = mimeType;
     }
     for (const name of NUMBER_OPTIONS) {
         if (options[name] !== undefined) {
