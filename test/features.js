@@ -53,11 +53,42 @@ describe('Test thumbnailator features', function () {
         assert.equal((await identify(output)).width, 100);
     });
 
+    it('should rotate an image according to its EXIF orientation', async function () {
+        try {
+            await exec('exiftool', ['-ver']);
+        } catch (e) {
+            this.skip();
+        }
+
+        await using dir = await createTmpDir();
+        const input = path.join(dir.path, 'rotated.jpg');
+        const output = path.join(dir.path, 'output.jpg');
+        await exec('gm', ['convert', '-size', '300x100', 'xc:red', input]);
+        // 6 = rotate 90 CW to display
+        await exec('exiftool', ['-overwrite_original', '-n', '-Orientation=6', input]);
+
+        await thumbnailator(input, output, {});
+        assert.deepEqual(await identify(output), {width: 100, height: 300});
+    });
+
     it('should use the cover image of an audio file', async () => {
         await using dir = await createTmpDir();
         const output = path.join(dir.path, 'output.jpg');
         await thumbnailator(getSample('sample_MP3_with-cover.mp3'), output, {width: 100});
         assert.equal((await identify(output)).width, 100);
+    });
+
+    it('should accept the options in the CLI', async () => {
+        await using dir = await createTmpDir();
+        const input = path.join(dir.path, 'download');
+        const expected = path.join(dir.path, 'expected.jpg');
+        const output = path.join(dir.path, 'output.jpg');
+        await fs.copyFile(getSample('sample_PDF_114kB.pdf'), input);
+
+        await thumbnailator(getSample('sample_PDF_114kB.pdf'), expected, {width: 200, page: 1, progressive: true});
+        await exec(process.execPath, [path.resolve('src', 'cli.js'), '--width', '200', '--page', '1', '--progressive',
+            '--mime-type', 'application/pdf', '--timeout', '0', input, output]);
+        assert.equal(await checksum(output), await checksum(expected));
     });
 
     it('should kill a command and its sub-processes exceeding the timeout', async () => {

@@ -28,17 +28,18 @@ describe('Test GraphicsMagickProcessor', function () {
 
     describe('Test Arguments creation', function() {
         [
-            [{}, 'convert in.pdf[0] out.jpg'],
-            [{crop: true}, 'convert in.pdf[0] out.jpg'], // crop is ignored because no size given
-            [{scale: 200}, 'convert in.pdf[0] -resize 200% out.jpg'],
-            [{width: 300, thumbnail: true}, 'convert in.pdf[0] -thumbnail 300x out.jpg'],
-            [{height: 400, width: 400, crop: true}, 'convert in.pdf[0] -resize 400x400^ -gravity north -extent 400x400 out.jpg'],
-            [{height: 400, ignoreAspect: true}, 'convert in.pdf[0] -resize x400 out.jpg'],
-            [{height: 400, width: 1200, quality: 100}, 'convert in.pdf[0] -quality 100 -resize 1200x400 out.jpg'],
-            [{height: 400, width: 1200, oversize: false, background: '#000000'}, 'convert in.pdf[0] -background #000000 -flatten -resize 1200x400 out.jpg'],
-            [{height: 400, width: 400, ignoreAspect: true}, 'convert in.pdf[0] -resize 400x400! out.jpg'],
-            [{width: 1200, density: 300}, 'convert -density 300 in.pdf[0] -resize 1200x out.jpg'],
-            [{page: 2}, 'convert in.pdf[2] out.jpg'],
+            [{}, 'convert in.pdf[0] -auto-orient out.jpg'],
+            [{crop: true}, 'convert in.pdf[0] -auto-orient out.jpg'], // crop is ignored because no size given
+            [{scale: 200}, 'convert in.pdf[0] -auto-orient -resize 200% out.jpg'],
+            [{width: 300, thumbnail: true}, 'convert in.pdf[0] -auto-orient -thumbnail 300x out.jpg'],
+            [{height: 400, width: 400, crop: true}, 'convert in.pdf[0] -auto-orient -resize 400x400^ -gravity north -extent 400x400 out.jpg'],
+            [{height: 400, ignoreAspect: true}, 'convert in.pdf[0] -auto-orient -resize x400 out.jpg'],
+            [{height: 400, width: 1200, quality: 100}, 'convert in.pdf[0] -auto-orient -quality 100 -resize 1200x400 out.jpg'],
+            [{height: 400, width: 1200, oversize: false, background: '#000000'}, 'convert in.pdf[0] -auto-orient -background #000000 -flatten -resize 1200x400 out.jpg'],
+            [{height: 400, width: 400, ignoreAspect: true}, 'convert in.pdf[0] -auto-orient -resize 400x400! out.jpg'],
+            [{width: 1200, density: 300}, 'convert -density 300 in.pdf[0] -auto-orient -resize 1200x out.jpg'],
+            [{page: 2}, 'convert in.pdf[2] -auto-orient out.jpg'],
+            [{width: 300, quality: 80, progressive: true}, 'convert in.pdf[0] -auto-orient -quality 80 -interlace Line -resize 300x out.jpg'],
         ].forEach(([options, expected]) => {
             it(`should return '${expected}' for options '${JSON.stringify(options)}'`, function() {
                 assert.equal(createArguments('in.pdf', 'out.jpg', {mimeType: 'application/pdf', ...options}).join(' '), expected);
@@ -47,7 +48,7 @@ describe('Test GraphicsMagickProcessor', function () {
 
         it('should crop non-pdf to the center', function() {
             assert.equal(createArguments('download', 'out.jpg', {height: 400, width: 400, crop: true, mimeType: 'image/jpeg'}).join(' '),
-                'convert download[0] -resize 400x400^ -gravity center -extent 400x400 out.jpg');
+                'convert download[0] -auto-orient -resize 400x400^ -gravity center -extent 400x400 out.jpg');
         });
     });
 });

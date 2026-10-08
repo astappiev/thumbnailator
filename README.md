@@ -43,6 +43,7 @@ You can customize the preview generation with various options.
 | `density`      | If supported by the file format, this option can be used to update the image resolution.                                         | Number (DPI)                | `72`          |
 | `background`   | The background color for the generated image.                                                                                    | String (color hash or RGBA) | `transparent` |
 | `page`         | The page (or frame) of a multi-page document to render, starting at 0. Not supported for video and audio.                        | Number                      | `0`           |
+| `progressive`  | If set to `true`, a progressive (interlaced) image is created. Not supported for video and audio.                                | Boolean                     | `false`       |
 | `mimeType`     | The mime type of the input. It is used instead of the file extension if supported, e.g. for files without extension.             | String                      | -             |
 | `timeout`      | The time limit of each external command (LibreOffice, GraphicsMagick, FFmpeg). `0` disables the limit.                           | Number (in milliseconds)    | `120000`      |
 

@@ -50,9 +50,14 @@ export function createArguments(input, output, options = {}) {
     }
 
     args.push(`${input}[${options.page ?? 0}]`);
+    args.push('-auto-orient');
 
     if (options.quality) {
         args.push('-quality', String(options.quality));
+    }
+
+    if (options.progressive) {
+        args.push('-interlace', 'Line');
     }
 
     if (options.background) {

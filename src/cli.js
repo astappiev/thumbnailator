@@ -22,6 +22,7 @@ Options:
       --shrink              only shrink images larger than the target size
       --enlarge             only enlarge images smaller than the target size
       --thumbnail           fast resize, favoring speed over quality
+      --progressive         create a progressive (interlaced) image
       --help                show this help`;
 
 const NUMBER_OPTIONS = ['width', 'height', 'scale', 'quality', 'density', 'page', 'timeout'];
@@ -50,6 +51,7 @@ function parseCliArgs(args) {
             shrink: {type: 'boolean'},
             enlarge: {type: 'boolean'},
             thumbnail: {type: 'boolean'},
+            progressive: {type: 'boolean'},
             help: {type: 'boolean'},
         },
     });

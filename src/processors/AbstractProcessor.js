@@ -16,6 +16,7 @@
  *  The default resolution is 72 dots per inch (DPI), which is equivalent to one point per pixel
  * @prop {string} [background] The background color
  * @prop {number} [page] The page (or frame) of a multi-page document to render, starting at 0. The default is 0
+ * @prop {boolean} [progressive] If set to {@code true} will create a progressive (interlaced) image
  * @prop {string} [mimeType] The mime type of the input, used instead of the file extension when it is supported
  * @prop {number} [timeout] The time limit for each external command, in milliseconds. {@code 0} disables it.
  *  The default is 120000 (2 minutes)
