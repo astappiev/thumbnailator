@@ -87,7 +87,7 @@ export function createArguments(input, output, options = {}) {
  */
 export default class GraphicsMagickProcessor extends AbstractProcessor {
 
-    async process(input, output, options) {
+    async process(input, output, options, render) {
         return await exec('gm', createArguments(input, output, options));
     }
 

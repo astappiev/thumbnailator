@@ -35,7 +35,6 @@ export function addProcessor(processor) {
             console.log('A processor is already defined for the mimeType: ' + mimeType);
         }
 
-        processor._root = process;
         processorsMap.set(mimeType, processor);
     }
 }
@@ -63,10 +62,23 @@ async function process(input, output, options = {}) {
     const mineType = mime.getType(extInput);
     const processor = processorsMap.get(mineType);
     if (processor) {
-        return processor.process(input, output, options);
+        return processor.process(input, output, options, render);
     }
 
     throw TypeError(`The input file type is not supported: ${mineType}`);
 }
+
+/**
+ * Creates a preview of an intermediate file (e.g. a PDF converted from a document), using the processor of its type.
+ *
+ * @callback Render
+ * @param {string} input
+ * @param {string} output
+ * @param {ProcessorOptions} options
+ * @returns {Promise<void>}
+ *
+ * @type {Render}
+ */
+const render = (input, output, options) => process(input, output, options);
 
 export default process;

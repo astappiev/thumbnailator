@@ -3,7 +3,7 @@ import AbstractProcessor from "./AbstractProcessor.js";
 
 export default class LibreOfficeProcessor extends AbstractProcessor {
 
-    async process(input, output, options) {
+    async process(input, output, options, render) {
         await using cacheDir = await createTmpDir();
         const tempPDF = replaceExt(input, 'pdf', cacheDir.path);
         await exec('libreoffice', [
@@ -14,7 +14,7 @@ export default class LibreOfficeProcessor extends AbstractProcessor {
             // '-env:UserInstallation=file:///tmp/LibreOffice_Conversion_' + cacheId
             input,
         ]);
-        await this._root(tempPDF, output, options);
+        await render(tempPDF, output, options);
     }
 
     getSupportedMimeTypes() {

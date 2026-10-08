@@ -3,7 +3,7 @@ import AbstractProcessor from "./AbstractProcessor.js";
 
 export default class FFmpegAudioProcessor extends AbstractProcessor {
 
-    async process(input, output, options) {
+    async process(input, output, options, render) {
         try {
             await using cacheDir = await createTmpDir();
             const tempCover = replaceExt(input, 'jpg', cacheDir.path);
@@ -13,7 +13,7 @@ export default class FFmpegAudioProcessor extends AbstractProcessor {
                 '-c:v', 'copy',
                 tempCover,
             ]);
-            await this._root(tempCover, output, options);
+            await render(tempCover, output, options);
         } catch (error) {
             return this.createWaveform(input, output, options);
         }

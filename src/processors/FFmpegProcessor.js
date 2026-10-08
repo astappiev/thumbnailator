@@ -39,7 +39,7 @@ export function createArguments(input, output, options = {}) {
 
 export default class FFmpegProcessor extends AbstractProcessor {
 
-    async process(input, output, options) {
+    async process(input, output, options, render) {
         return exec('ffmpeg', createArguments(input, output, options));
     }
 
