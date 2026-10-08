@@ -8,15 +8,30 @@ export default class LibreOfficeProcessor extends AbstractProcessor {
         const tempPDF = replaceExt(input, 'pdf', cacheDir.path);
         // Only the rendered page is exported, as converting a whole long document is slow
         const exportFilter = 'pdf:writer_pdf_Export:' + JSON.stringify({PageRange: {type: 'string', value: String((options.page ?? 0) + 1)}});
-        await exec('libreoffice', [
+        const args = [
             '--headless',
             '--convert-to', exportFilter,
             '--outdir', cacheDir.path,
             '--convert-images-to', '"jpg"',
             // '-env:UserInstallation=file:///tmp/LibreOffice_Conversion_' + cacheId
-            input,
-        ], options.timeout);
+        ];
+
+        const inputFilter = this.getInputFilter();
+        if (inputFilter) {
+            args.push('--infilter=' + inputFilter);
+        }
+
+        args.push(input);
+
+        await exec('libreoffice', args, options.timeout);
         await render(tempPDF, output, {...options, page: 0});
+    }
+
+    /**
+     * @returns {?string} the LibreOffice import filter to use
+     */
+    getInputFilter() {
+        return undefined;
     }
 
     getSupportedMimeTypes() {
@@ -97,8 +112,6 @@ export default class LibreOfficeProcessor extends AbstractProcessor {
             "text/csv",
             "text/spreadsheet",
             "application/x-qpro",
-            "application/sql",
-            "application/x-sql",
             "application/x-dbase",
             "application/vnd.corel-draw",
             "application/vnd.lotus-wordpro",

@@ -55,6 +55,7 @@ Generally, you can expect support for:
 
 * **PDF Documents:** `.pdf` (via GraphicsMagick)
 * **Office Documents:** `.docx`, `.xlsx`, `.pptx`, `.odt`, `.ods`, `.odp`, etc. (via LibreOffice)
+* **Text and source files:** `.txt`, `.md`, `.json`, `.xml`, `.js`, `.css`, `.yaml`, etc. (rendered as plain text via LibreOffice)
 * **Images:** `.jpg`, `.png`, `.gif`, `.bmp`, `.tiff`, `.webp`, etc. (via GraphicsMagick)
 * **Videos:** `.mp4`, `.avi`, `.mov`, `.mkv`, etc. (previews generated from frames via FFmpeg)
 * **Audio:** `.mp3`, `.ogg` (audio waveforms or cover images via FFmpeg)

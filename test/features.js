@@ -18,10 +18,29 @@ describe('Test thumbnailator features', function () {
 
     it('should list supported mime types', () => {
         assert.ok(getSupportedMimeTypes().includes('application/pdf'));
-        assert.ok(isSupported('Image/PNG; charset=binary'));
+        assert.ok(isSupported('text/plain'));
+        assert.ok(isSupported('Text/Plain; charset=utf-8'));
         assert.ok(isSupported('application/vnd.ms-word.document.macroEnabled.12'));
         assert.ok(!isSupported('application/x-unknown'));
         assert.ok(!isSupported(undefined));
+    });
+
+    it('should not print anything on import', async () => {
+        const url = JSON.stringify(import.meta.resolve('../src/thumbnailator.js'));
+        assert.equal(await exec(process.execPath, ['--input-type=module', '--eval', `import ${url};`]), '');
+    });
+
+    // .xml would be interpreted without the plain text filter, .py needs the custom mime type
+    ['txt', 'xml', 'py'].forEach(ext => {
+        it(`should create a preview of a .${ext} file`, async () => {
+            await using dir = await createTmpDir();
+            const input = path.join(dir.path, 'input.' + ext);
+            const output = path.join(dir.path, 'output.jpg');
+            await fs.writeFile(input, '<note>\n  <to>Tove</to>\n</note>\n');
+
+            await thumbnailator(input, output, {width: 200});
+            assert.equal((await identify(output)).width, 200);
+        });
     });
 
     it('should render the requested page', async () => {
@@ -43,6 +62,16 @@ describe('Test thumbnailator features', function () {
 
         await assert.rejects(thumbnailator(input, output, {width: 100}), /not supported/);
         await thumbnailator(input, output, {width: 100, mimeType: 'image/png; charset=binary'});
+        assert.equal((await identify(output)).width, 100);
+    });
+
+    it('should convert a document without extension', async () => {
+        await using dir = await createTmpDir();
+        const input = path.join(dir.path, 'download');
+        const output = path.join(dir.path, 'output.jpg');
+        await fs.writeFile(input, 'Hello world\n');
+
+        await thumbnailator(input, output, {width: 100, mimeType: 'text/plain'});
         assert.equal((await identify(output)).width, 100);
     });
 

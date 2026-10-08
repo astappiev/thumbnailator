@@ -1,17 +1,27 @@
 import fsPromises from "fs/promises";
 import path from "path";
-import mime from "mime";
+import {Mime} from "mime";
+import standardTypes from "mime/types/standard.js";
+import otherTypes from "mime/types/other.js";
 
 import FFmpegProcessor from "./processors/FFmpegProcessor.js";
 import FFmpegAudioProcessor from "./processors/FFmpegAudioProcessor.js";
 import GraphicsMagickProcessor from "./processors/GraphicsMagickProcessor.js";
 import LibreOfficeProcessor from "./processors/LibreOfficeProcessor.js";
+import TextProcessor from "./processors/TextProcessor.js";
+
+// The default instance is frozen, so a new one is created to add the types missing in it
+const mime = new Mime(standardTypes, otherTypes).define({
+    'text/x-python': ['py'],
+    'text/x-rst': ['rst'],
+});
 
 const processors = [
     new GraphicsMagickProcessor(),
     new FFmpegProcessor(),
     new FFmpegAudioProcessor(),
     new LibreOfficeProcessor(),
+    new TextProcessor(),
 ];
 
 /** @type {Map<String, AbstractProcessor>} */
